@@ -1,0 +1,57 @@
+#!/bin/bash
+case $1 in
+cpu)
+    top -bn 1 -i -c |awk 'NR==3{print $2}'
+;;
+uptime1) 
+   uptime|awk 'NR==1{print $8}'|awk -F"," '{print $1}'
+;;
+uptime5)
+   uptime|awk 'NR==1{print $9}'|awk -F"," '{print $1}'
+;;
+uptime15)
+   uptime|awk 'NR==1{print $10}'|awk -F"," '{print $1}'
+;;
+xtjc)
+    ps -ef  | wc -l
+;;
+znc)
+    free -m |awk 'NR==2{print $2}'
+;;
+free)
+    free -m |awk 'NR==2{print $3}' 
+;;
+nginx)
+    curl 192.168.180.123/nginx-status 2>/dev/null|awk 'NR==1{print $3}'
+;;
+nginx-requie)
+   curl 192.168.180.123/nginx-status 2>/dev/null|awk 'NR==3{print $1,$2,$3}'
+;;
+/)
+   echo `df  $1 | awk 'NR==2{print $4}'`/1024 |bc
+;;
+mysql)
+    mysql -uroot -p'Qyf@199817' -e"show databases;" &>/dev/null
+    if [ $? -eq 0 ];then
+    echo "0"
+else
+    echo "1"
+fi
+;;
+nginx-status)
+  curl 192.168.180.123/nginx-status &>/dev/null
+  if [ $? -eq 0 ];then
+   echo "0"
+else 
+   echo "1"
+fi
+;;
+redis)
+  systemctl status redis &>/dev/null
+  if [ $? -eq 0 ];then
+  echo "0"
+else
+  echo "1"
+fi
+;;
+esac
